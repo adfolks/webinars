@@ -2,7 +2,7 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: eks-webinar-demo
+  name: eks-webinar-cluster
   region: eu-central-1
 
 vpc:
