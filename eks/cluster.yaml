@@ -1,0 +1,43 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: eks-webinar-demo
+  region: eu-central-1
+
+vpc:
+  subnets:
+    private:
+      eu-central-1a: { id: subnet-017082f2210038162 }
+      eu-central-1b: { id: subnet-0ca47ca1609e78e4f }
+      eu-central-1c: { id: subnet-008fec89791ce8d06 }
+
+managedNodeGroups:
+  - name: ng-1
+    instanceType: t2.xlarge
+    desiredCapacity: 2
+    labels: { role: web, nodeSelector.lifecycle: OnDemand }
+    minSize: 1
+    maxSize: 4
+    volumeSize: 50
+    privateNetworking: true
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+nodeGroups:
+  - name: ng-2
+    desiredCapacity: 2
+    labels: { role: monitoring, nodeSelector.lifecycle: Ec2Spot }
+    minSize: 1
+    maxSize: 4
+    volumeSize: 50
+    privateNetworking: true
+    instancesDistribution:
+      maxPrice: 0.020
+      instanceTypes: ["t2.small"]
+      onDemandBaseCapacity: 0
+      onDemandPercentageAboveBaseCapacity: 50
+      spotAllocationStrategy: "capacity-optimized" # or lowest-price
+    iam:
+      withAddonPolicies:
+        autoScaler: true
